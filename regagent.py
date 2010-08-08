@@ -20,6 +20,10 @@ from sippy.UacStateTrying import UacStateTrying
 from application.configuration import *
 import getopt, sys, os
 
+from twisted.python import syslog
+from twisted.python.log import msg
+from twisted.python.log import err
+
 global_config = {}
 
 def recvConnect(ua, rtime, origin):
@@ -103,6 +107,8 @@ def recvRequest(req):
 		return (req.genResponse(501, 'Not Implemented'), None, None)
 
 if __name__ == '__main__':
+	syslog.startLogging('RegAgent')
+
 	# Get config file
 	configuration = ConfigFile('/etc/regagent/config.ini')
 
