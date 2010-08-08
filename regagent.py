@@ -35,7 +35,7 @@ def recvConnect(ua, rtime, origin):
 	ua.fail_cbs = None
 	ua.dead_cbs = None
 	ua.tr = None
-	global_config['sip_tm'].unregConsumer(ua, str(ua.cId))
+	global_config['_sip_tm'].unregConsumer(ua, str(ua.cId))
 
 def recvDisconnect(ua, rtime, origin, result = 0):
 	msg("recvDisconnect %s" % str(ua))
@@ -50,7 +50,7 @@ def recvDead(ua):
 	ua.fail_cbs = None
 	ua.dead_cbs = None
 	ua.tr = None
-	global_config['sip_tm'].unregConsumer(ua, str(ua.cId))
+	global_config['_sip_tm'].unregConsumer(ua, str(ua.cId))
 
 
 def recvEvent(event, ua):
@@ -97,8 +97,8 @@ def register_clients():
 		Ua.cId = SipCallId()
 		req = Ua.genRequest("REGISTER")
 		Ua.changeState((UacStateTrying,))
-		global_config['sip_tm'].regConsumer(Ua, str(Ua.cId))
-		Ua.tr = global_config['sip_tm'].newTransaction(req, Ua.recvResponse)
+		global_config['_sip_tm'].regConsumer(Ua, str(Ua.cId))
+		Ua.tr = global_config['_sip_tm'].newTransaction(req, Ua.recvResponse)
 
 def recvRequest(req):
 	if req.getMethod() in ('NOTIFY', 'INFO', 'PING'):
@@ -114,11 +114,11 @@ if __name__ == '__main__':
 
 	global_config['proxy_address'] = configuration.get_setting('General', 'paddr', default='127.0.0.1', type=str)
 	global_config['proxy_port'] = configuration.get_setting('General', 'pport', default=5060, type=int)
-	global_config['sip_address'] = configuration.get_setting('General', 'laddr', default='127.0.0.1', type=str)
-	global_config['sip_port'] = configuration.get_setting('General', 'lport', default=5060, type=int)
+	global_config['_sip_address'] = configuration.get_setting('General', 'laddr', default='127.0.0.1', type=str)
+	global_config['_sip_port'] = configuration.get_setting('General', 'lport', default=5060, type=int)
 	global_config['sip_username'] = configuration.get_setting('General', 'username', default='username', type=str)
 	global_config['sip_password'] = configuration.get_setting('General', 'password', default='password', type=str)
-	global_config['sip_tm'] = SipTransactionManager(global_config, recvRequest)
+	global_config['_sip_tm'] = SipTransactionManager(global_config, recvRequest)
 
 	lc = LoopingCall(register_clients)
 	lc.start(60)
