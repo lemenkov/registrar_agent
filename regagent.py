@@ -26,6 +26,25 @@ from twisted.python.log import err
 
 global_config = {}
 
+class UserData:
+	# List of [Int User Id, Ext Display Name, Ext Name, Ext Login, Ext Pasword, Ext SIP Domain, Ext Sip Port]
+	Data = []
+	Timer = None
+
+	def __init__(self):
+		self.Timer = LoopingCall(self.get_data)
+		self.Timer.start(210, True)
+
+	def get_data(self):
+		# Obtain list of [Int User Id, Ext Display Name, Ext Name, Ext Login, Ext Pasword, Ext SIP Domain, Ext Sip Port] somehow
+		#
+		# For example, you could select them from DB, receive over network or just hardcode as in this example
+		self.Data = [
+			("internaluser",        "Registrar Agent",      "extacc1",      "extlogin1",    "extpass1",     "ext1.domain1.com",     "5060"),
+			("internaluser",        "Registrar Agent",      "extacc2",      "extlogin2",    "extpass2",     "ext1.domain2.com",     None),
+			("internaluser",        "Registrar Agent",      "extacc3",      "extlogin3",    "extpass3",     "ext1.domain3.com",     None)
+			]
+
 def recvConnect(ua, rtime, origin):
 	msg("recvConnect %s" % str(ua))
 	# Final 200 OK - clean up stuff here
@@ -57,16 +76,9 @@ def recvEvent(event, ua):
 	msg("recvEvent %s at %s" % (str(event), str(ua)))
 	pass
 
-def register_clients():
-	# Obtain list of [Int User Id,	Ext Display Name,	Ext Name,	Ext Login,	Ext Pasword,	Ext SIP Domain,		Ext Sip Port]
-	Data = [
-			("internaluser",	"Registrar Agent",	"extacc1",	"extlogin1",	"extpass1",	"ext1.domain1.com",	"5060"),
-			("internaluser",	"Registrar Agent",	"extacc2",	"extlogin2",	"extpass2",	"ext1.domain2.com",	None),
-			("internaluser",	"Registrar Agent",	"extacc3",	"extlogin3",	"extpass3",	"ext1.domain3.com",	None)
-		]
-
-	# For each record in Data list create a registrar UA
-	for (InternalUserId, ExtDisplayName, ExtName, ExtLogin, ExtPassword, ExtDomain, ExtPort) in Data:
+def register_clients(ud):
+	# For each record in UserData list create a registrar UA
+	for (InternalUserId, ExtDisplayName, ExtName, ExtLogin, ExtPassword, ExtDomain, ExtPort) in ud.Data:
 		print InternalUserId, ExtDisplayName, ExtName, ExtLogin, ExtPassword, ExtDomain, ExtPort
 		Ua = UA(
 				global_config,
@@ -120,7 +132,9 @@ if __name__ == '__main__':
 	global_config['sip_password'] = configuration.get_setting('General', 'password', default='password', type=str)
 	global_config['_sip_tm'] = SipTransactionManager(global_config, recvRequest)
 
-	lc = LoopingCall(register_clients)
+	ud = UserData()
+
+	lc = LoopingCall(register_clients, ud)
 	lc.start(60)
 
 	reactor.run(installSignalHandlers = 0)
