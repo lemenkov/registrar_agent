@@ -104,7 +104,7 @@ def recvRequest(req):
 
 if __name__ == '__main__':
 	# Get config file
-	configuration = ConfigFile('/etc/callback/config.ini')
+	configuration = ConfigFile('/etc/regagent/config.ini')
 
 	global_config['proxy_address'] = configuration.get_setting('General', 'paddr', default='127.0.0.1', type=str)
 	global_config['proxy_port'] = configuration.get_setting('General', 'pport', default=5060, type=int)
