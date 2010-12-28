@@ -79,7 +79,6 @@ def recvEvent(event, ua):
 def register_clients(ud):
 	# For each record in UserData list create a registrar UA
 	for (InternalUserId, ExtDisplayName, ExtName, ExtLogin, ExtPassword, ExtDomain, ExtPort) in ud.Data:
-		print InternalUserId, ExtDisplayName, ExtName, ExtLogin, ExtPassword, ExtDomain, ExtPort
 		Ua = UA(
 				global_config,
 				event_cb = recvEvent,
