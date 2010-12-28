@@ -126,7 +126,7 @@ if __name__ == '__main__':
 	global_config['proxy_address'] = configuration.get_setting('General', 'paddr', default='127.0.0.1', type=str)
 	global_config['proxy_port'] = configuration.get_setting('General', 'pport', default=5060, type=int)
 	global_config['_sip_address'] = configuration.get_setting('General', 'laddr', default='127.0.0.1', type=str)
-	global_config['_sip_port'] = configuration.get_setting('General', 'lport', default=5060, type=int)
+	global_config['_sip_port'] = configuration.get_setting('General', 'lport', default=5070, type=int)
 	global_config['_sip_tm'] = SipTransactionManager(global_config, recvRequest)
 
 	ud = UserData()
