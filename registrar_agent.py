@@ -116,7 +116,18 @@ if __name__ == '__main__':
 	syslog.startLogging('RegAgent')
 
 	# Get config file
-	configuration = ConfigFile('/etc/regagent/config.ini')
+	configuration = ConfigFile('/etc/registrar_agent/config.ini')
+
+	try:
+		opts, args = getopt.getopt(sys.argv[1:], 'c:')
+	except getopt.GetoptError:
+		print 'usage: registrar_agent.py [-c config]'
+		sys.exit(1)
+
+	for o, a in opts:
+		if o == '-c':
+			configuration = a
+			continue
 
 	global_config['proxy_address'] = configuration.get_setting('General', 'paddr', default='127.0.0.1', type=str)
 	global_config['proxy_port'] = configuration.get_setting('General', 'pport', default=5060, type=int)
