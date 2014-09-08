@@ -1,5 +1,5 @@
 Name:		registrar_agent
-Version:	0.2
+Version:	0.3
 Release:	1%{?dist}
 Summary:	A simple REGISTRAR redirector application
 Group:		Applications/Internet
@@ -29,6 +29,9 @@ A simple REGISTRAR redirector application.
 
 %install
 make install DESTDIR=$RPM_BUILD_ROOT
+%if 0%{?el6}
+install -p -m 0644 -D %{name}.upstart $RPM_BUILD_ROOT%{_sysconfdir}/init/%{name}.conf
+%endif
 
 
 %pre
@@ -38,30 +41,31 @@ exit 0
 
 
 %post
-/sbin/chkconfig --add %{name}
+#/sbin/chkconfig --add %{name}
 
 
 %preun
 if [ $1 = 0 ]; then
-        /sbin/service %{name} stop >/dev/null 2>&1
-        /sbin/chkconfig --del %{name}
+#        /sbin/service %{name} stop >/dev/null 2>&1
+#        /sbin/chkconfig --del %{name}
 fi
 
 
 %postun
 if [ "$1" -ge "1" ]; then
-        /sbin/service %{name} condrestart >/dev/null 2>&1
+#        /sbin/service %{name} condrestart >/dev/null 2>&1
 fi
 
 
 %files
 %dir %{_sysconfdir}/%{name}
 %config(noreplace) %{_sysconfdir}/%{name}/config.ini
-%{_initrddir}/%{name}
+%if 0%{?el7}%{?fedora}
+# TODO add systemd
+%else
+%{_sysconfdir}/init/%{name}.conf
+%endif
 %{_sbindir}/%{name}
 %attr(755,%{name},%{name}) %{_localstatedir}/run/%{name}
 
 %changelog
-* Mon Sep  8 2014 Peter Lemenkov <lemenkov@gmail.com> - 0.1-1
-- Initial package
-
