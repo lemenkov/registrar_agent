@@ -16,13 +16,8 @@ from sippy.SipURL import SipURL
 from sippy.SipContact import SipContact
 from sippy.UacStateTrying import UacStateTrying
 
-
 from application.configuration import *
 import getopt, sys, os
-
-from twisted.python import syslog
-from twisted.python.log import msg
-from twisted.python.log import err
 
 global_config = {}
 
