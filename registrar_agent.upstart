@@ -1,0 +1,17 @@
+description "A simple REGISTRAR redirector application"
+author      "Peter Lemenkov"
+
+start on runlevel [345] and stopped rc
+stop on runlevel [!2345]
+
+respawn
+
+chdir /var/run/registrar_agent
+
+#setgid registrar_agent
+#setuid registrar_agent
+
+script
+        #. /etc/sysconfig/registrar_agent
+        exec /usr/bin/python /usr/sbin/registrar_agent -p /var/run/registrar_agent/registrar_agent.pid -c /etc/registrar_agent/config.ini
+end script
